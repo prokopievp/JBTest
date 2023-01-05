@@ -1,4 +1,4 @@
-<h1 align="center">Тестовое задание для PUSHKEEN</h1>
+Тестовое задание для PUSHKEEN
 
 
 Установка Python
