@@ -15,12 +15,12 @@ class Post(models.Model):
 		return truncatechars(self.text, 20)
 
 	def updated_at(obj):
-		return obj.createdAt
+		return obj.updatedAt
 	updated_at.short_description = 'Дата создания'
 	updated_at.admin_order_field = 'updatedAt'
 
 	def created_at(obj):
-		return obj.updatedAt
+		return obj.createdAt
 	created_at.short_description = 'Дата последнего обновления'
 	created_at.admin_order_field = 'createdAt'
 

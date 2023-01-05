@@ -15,7 +15,7 @@ def post_list(request):
 	if request.method == 'GET':
 		posts = Post.objects.all()
 		serializer = PostSerializer(posts, many=True)
-		return Response(serializer.data)
+		return Response(serializer.data, status=status.HTTP_200_OK)
 	elif request.method == 'POST':
 		serializer = PostSerializer(data=request.data)
 		if serializer.is_valid():
@@ -26,7 +26,7 @@ def post_list(request):
 			
 			serializer.save()
 			return Response(serializer.data, status=status.HTTP_201_CREATED)
-		return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
+		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 	elif request.method == 'DELETE':
 		posts = Post.objects.all()
 		posts.delete()
@@ -43,19 +43,29 @@ def post_detail(request, pk):
 	try:
 		post = Post.objects.get(pk=pk)
 	except Post.DoesNotExist:
-		#print('NO ELEMENT FOR ID "' + str(pk) + '"')
-		return Response('NO ELEMENT FOR ID "' + str(pk) + '"',status=status.HTTP_404_NOT_FOUND)
+		return Response([], status=status.HTTP_404_NOT_FOUND)
 
 	if request.method == 'GET':
 		serializer = PostSerializer(post)
-		return Response(serializer.data)
+		return Response(serializer.data, status=status.HTTP_200_OK)
 
 	elif request.method == 'PUT':
+		old_image_url = post['imageURL']
 		serializer = PostSerializer(post, data=request.data)
 		if serializer.is_valid():
+			#Downloading image on server in path ".../JBtest/JB/JBapi/image_files".
+			new_image_url =  request.data['imageURL']
+			load_img_status = load_img(new_image_url, Response)
+			if load_img_status != None:
+				return load_img_status
+			if new_image_url != old_image_url:
+				image_file_name = old_image_url.split('/')[-1]
+				image_path = os.getcwd() + '\\JBapi\\image_files\\' + image_file_name
+				if os.path.isfile(image_path):
+					os.remove(image_path)
 			serializer.save()
-			return Response(serializer.data)
-		return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
+			return Response(serializer.data, status=status.HTTP_200_OK)
+		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 	elif request.method == 'DELETE':
 		#count num of posts with the same imageURL
@@ -80,8 +90,8 @@ def post_detail(request, pk):
 				if load_img_status != None:
 					return load_img_status
 			serializer.save()
-			return Response(serializer.data)
-		return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
+			return Response(serializer.data, status=status.HTTP_200_OK)
+		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
