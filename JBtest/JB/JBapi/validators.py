@@ -9,7 +9,7 @@ def url_validator(url):
 	try:
 		image_request = requests.get(url)
 	except:
-		raise ValidationError('Неверный URL!')
+		raise ValidationError('Bad URL!')
 		
 	if image_request.status_code == 200:
 		image_path = os.getcwd() + '\\JBapi\\image_files\\' + url.split('/')[-1]
@@ -18,4 +18,4 @@ def url_validator(url):
 		out.close()
 		return None
 	else:
-		return ValidationError('Неверный URL!')
+		return ValidationError('Bad URL!')

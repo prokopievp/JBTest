@@ -10,7 +10,7 @@ import os
 
 
 ###GET and POST for URL like "http://localhost:8000/posts/". Responses all elements.
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'POST', 'DELETE'])
 def post_list(request):
 	if request.method == 'GET':
 		posts = Post.objects.all()
@@ -27,6 +27,13 @@ def post_list(request):
 			serializer.save()
 			return Response(serializer.data, status=status.HTTP_201_CREATED)
 		return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
+	elif request.method == 'DELETE':
+		posts = Post.objects.all()
+		posts.delete()
+		images_dir = os.getcwd() + '\\JBapi\\image_files'
+		for f in os.listdir(images_dir):
+			os.remove(os.path.join(images_dir, f))
+		return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 ###Detailed GET, PUT, DELETE and PATCH for URL like "http://localhost:8000/posts/pk", 
@@ -51,6 +58,15 @@ def post_detail(request, pk):
 		return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
 
 	elif request.method == 'DELETE':
+		#count num of posts with the same imageURL
+		serializer = PostSerializer(post)
+		url_of_element = serializer.data['imageURL']
+		elements_num = Post.objects.filter(imageURL=url_of_element).count()
+		if elements_num == 1:
+			image_file_name = url_of_element.split('/')[-1]
+			image_path = os.getcwd() + '\\JBapi\\image_files\\' + image_file_name
+			if os.path.isfile(image_path):
+				os.remove(image_path)
 		post.delete()
 		return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -78,9 +94,10 @@ def get_image(request, pk):
 	except Post.DoesNotExist:
 		return Response(status=status.HTTP_404_NOT_FOUND)
 
-
 	serializer = PostSerializer(post)
 	path_to_image = os.getcwd() + '\\JBapi\\image_files\\' + serializer.data['imageURL'].split('/')[-1]
+	if not os.path.isfile(path_to_image):
+		return Response('No image on server, but element in db exists!', status=status.HTTP_404_NOT_FOUND)
 	return FileResponse(open(path_to_image, 'rb'))
 
 
