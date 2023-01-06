@@ -19,11 +19,11 @@
 
 ![create-database.png](https://b.radikal.host/2023/01/06/create-database.png)
 ![create-JBdb.png](https://b.radikal.host/2023/01/06/create-JBdb.png)
-- *Далее*, нужно перейти в папку .../JBtest проекта и запустить установку необходимых пакетов через pip:
+- *Далее*, нужно перейти в командной строке в директорию .../JBtest проекта и запустить установку необходимых пакетов через pip:
 ```sh
 pip install -r requirements.txt
 ```
-- *Далее* нужно перейти в директорию ...JBtest/JB и выполнить следующие команды:
+- *Далее* нужно выполнить следующие команды(обязательно после создания БД):
 ```sh 
 python manage.py makemigrations
 python manage.py migrate
