@@ -9,7 +9,7 @@ from .image import load_img
 import os
 
 
-###GET and POST for URL like "http://localhost:8000/posts/". Responses all elements.
+###GET and POST for URL like "http://localhost:8000/api/posts/". Responses all elements.
 @api_view(['GET', 'POST', 'DELETE'])
 def post_list(request):
 	if request.method == 'GET':
@@ -19,7 +19,7 @@ def post_list(request):
 	elif request.method == 'POST':
 		serializer = PostSerializer(data=request.data)
 		if serializer.is_valid():
-			#Downloading image on server in path ".../JBtest/JB/JBapi/image_files". 
+			#Downloading image on server in path ".../JBtest/image_files". 
 			load_img_status = load_img(request.data['imageURL'], Response)
 			if load_img_status != None:
 				return load_img_status
@@ -36,7 +36,7 @@ def post_list(request):
 		return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-###Detailed GET, PUT, DELETE and PATCH for URL like "http://localhost:8000/posts/pk", 
+###Detailed GET, PUT, DELETE and PATCH for URL like "http://localhost:8000/api/posts/pk", 
 ###where pk is id of element in database
 @api_view(['GET', 'PUT', 'DELETE', 'PATCH'])
 def post_detail(request, pk):
@@ -53,7 +53,7 @@ def post_detail(request, pk):
 		old_image_url = post['imageURL']
 		serializer = PostSerializer(post, data=request.data)
 		if serializer.is_valid():
-			#Downloading image on server in path ".../JBtest/JB/JBapi/image_files".
+			#Downloading image on server in path ".../JBtest/JBapi/image_files".
 			new_image_url =  request.data['imageURL']
 			load_img_status = load_img(new_image_url, Response)
 			if load_img_status != None:
@@ -85,7 +85,7 @@ def post_detail(request, pk):
 
 		if serializer.is_valid():
 			if 'imageURL' in request.data:
-				#Redownloading image on server in path ".../JBtest/JB/JBapi/image_files"
+				#Redownloading image on server in path ".../JBtest/JBapi/image_files"
 				load_img_status = load_img(request.data['imageURL'], Response)
 				if load_img_status != None:
 					return load_img_status
@@ -95,7 +95,7 @@ def post_detail(request, pk):
 
 
 
-### Responsing binary image from URL like "http://localhost:8000/posts/96/image". pk - id in database.
+### Responsing binary image from URL like "http://localhost:8000/api/posts/96/image". pk - id in database.
 ### Images located on server, path - ".../JBtest/JB/JBapi/image_files"
 @api_view(['GET'])
 def get_image(request, pk):
