@@ -76,7 +76,6 @@ def post_detail(request, pk):
 		if elements_num == 1:
 			image_file_name = url_of_element.split('/')[-1]
 			image_path = os.getcwd() + '\\JBapi\\image_files\\' + image_file_name
-			print(image_path)
 			if os.path.isfile(image_path):
 				os.remove(image_path)
 		post.delete()
