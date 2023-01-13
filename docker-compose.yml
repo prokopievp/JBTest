@@ -1,0 +1,19 @@
+version: '3.7'
+services:
+  web:
+    build: ./
+    container_name: web
+    ports:
+      - 8000:8000
+  db:
+    image: postgres
+    container_name: db
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_PASSWORD: 12211221
+      POSTGRES_USER: postgres
+      POSTGRES_DB: JBdb
+volumes:
+  postgres_data:
