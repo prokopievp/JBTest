@@ -1,13 +1,12 @@
 version: '3.7'
 services:
   web:
-    build: ./
+    build: ./JBtest
     container_name: web
-    command: python ./JBtest/manage.py runserver 0.0.0.0:8000
     ports:
       - 8000:8000
     env_file:
-      - ./.env.dev
+      - ./.env
   db:
     image: postgres
     container_name: db
@@ -15,8 +14,8 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
-      POSTGRES_PASSWORD: 12211221
-      POSTGRES_USER: postgres
-      POSTGRES_DB: JBdb
+      POSTGRES_PASSWORD: $SQL_PASSWORD
+      POSTGRES_USER: ${SQL_USER}
+      POSTGRES_DB: ${DATABASE}
 volumes:
   postgres_data:
